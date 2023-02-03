@@ -1,0 +1,70 @@
+{
+  "configurations": [
+    {
+      "args": ["clean"],
+      "console": "externalTerminal",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "name": "Clean",
+      "program": "make",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "cppvsdbg"
+    },
+    {
+      "args": [],
+      "console": "externalTerminal",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "name": "Compile",
+      "program": "make",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "cppvsdbg"
+    },
+    {
+      "args": ["dll"],
+      "console": "externalTerminal",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "name": "Compile DLL",
+      "program": "make",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "cppvsdbg"
+    },
+    {
+      "args": ["exe"],
+      "console": "externalTerminal",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "name": "Compile EXE",
+      "program": "make",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "cppvsdbg"
+    },
+    {
+      "args": ["./build/payload,dll"],
+      "console": "externalTerminal",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "name": "Run DLL",
+      "program": "rundll32",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "cppvsdbg"
+    },
+    {
+      "args": [],
+      "console": "externalTerminal",
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "name": "Run EXE",
+      "program": "./build/payload.exe",
+      "request": "launch",
+      "stopAtEntry": false,
+      "type": "cppvsdbg"
+    }
+  ]
+}
