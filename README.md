@@ -35,7 +35,7 @@ $ make setup BIN=local/calc.min
 $ make
 $ # OR
 $ make setup BIN=local/calc.min KEY=redteam
-$ make ALLOC=HEAP
+$ make ALLOC=HEAP EXEC=ENUMCALENDARINFO
 ```
 
 ## Make targets
@@ -60,7 +60,12 @@ and a handful of other things in `.gitignore`.
 
 ### ALLOC
 
-Method for allocation. Can be `HEAP` or `STACK`. Default is `STACK`.
+Method for allocation. Supported values are:
+
+- `HEAP`
+- `STACK`
+
+Default is `STACK`.
 
 ### BIN
 
@@ -68,8 +73,20 @@ Path to bin file containing payload. Default is `local/payload.bin`.
 
 ### EXEC
 
-Method for executing shellcode. Only option right now is `THREAD`
-(meaning no shenanigans, just `CreateThread()`).
+Method for executing shellcode. Supported values are:
+
+- `CERTENUMSYSTEMSTORE`
+- `COPYFILE2`
+- `CRYPTENUMOIDINFO`
+- `ENUMCALENDARINFO`
+- `ENUMDISPLAYMONITORS`
+- `ENUMPWRSCHEMES`
+- `ENUMPROPS`
+- `ENUMWINDOWS`
+- `SETTIMER`
+- `THREAD`
+
+Default is `THREAD` (meaning no shenanigans, just `CreateThread()`).
 
 ### KEY
 
