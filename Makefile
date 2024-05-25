@@ -28,7 +28,7 @@ all: dll exe;
 clean:
 ifeq ($(unameS),Windows)
 ifneq ($(wildcard $(BUILD)),)
-	powershell -c Remove-Item -Force -Recurse "$(BUILD)"
+	powershell -c remove-item -force -recurse "$(BUILD)"
 endif
 else
 	rm -f -r "$(BUILD)"
@@ -51,7 +51,7 @@ dbgexe: dir
 dir:
 ifeq ($(unameS),Windows)
 ifeq ($(wildcard $(BUILD)),)
-	powershell -c "New-Item -ItemType Directory \"$(BUILD)\" | Out-Null"
+	powershell -c "new-item -itemtype directory \"$(BUILD)\" | out-null"
 endif
 else
 	mkdir -p "$(BUILD)"
@@ -93,12 +93,12 @@ runexe: exe
 endif
 
 setup: $(BIN)
-	python ./tools/scxor.py -k "$(KEY)" -o payload.h $(BIN)
+	python3 ./tools/scxor.py -k "$(KEY)" -o payload.h $(BIN)
 
 superclean: clean
 ifeq ($(unameS),Windows)
 ifneq ($(wildcard payload.h),)
-	powershell -c Remove-Item -Force payload.h
+	powershell -c remove-item -force payload.h
 endif
 else
 	rm -f payload.h

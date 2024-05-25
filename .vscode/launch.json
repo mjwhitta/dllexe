@@ -45,7 +45,7 @@
       "type": "cppvsdbg"
     },
     {
-      "args": ["./build/payload,dll"],
+      "args": ["./build/payload.dll,Start"],
       "console": "externalTerminal",
       "cwd": "${workspaceFolder}",
       "environment": [],

