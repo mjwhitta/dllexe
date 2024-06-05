@@ -13,10 +13,6 @@ CC := x86_64-w64-mingw32-g++
 ENC := XOR
 EXEC := THREAD
 KEY := none
-MINGW := -I/usr/x86_64-w64-mingw
-ifeq ($(unameS),Windows)
-    MINGW :=
-endif
 PAYLOAD :=
 ifneq ($(wildcard payload.h),)
     PAYLOAD := -D PAYLOAD
@@ -43,7 +39,6 @@ dbgexe: dir
 	    -D EXEC_$(EXEC) \
 	    $(PAYLOAD) \
 	    -g \
-	    $(MINGW) \
 	    -o "$(BUILD)/payload.exe" \
 	    -static \
 	    *.cpp
@@ -64,7 +59,6 @@ dll: dir
 	    -D ENC_$(ENC) \
 	    -D EXEC_$(EXEC) \
 	    $(PAYLOAD) \
-	    $(MINGW) \
 	    -o "$(BUILD)/payload.dll" \
 	    -shared \
 	    -static \
@@ -76,7 +70,6 @@ exe: dir
 	    -D ENC_$(ENC) \
 	    -D EXEC_$(EXEC) \
 	    $(PAYLOAD) \
-	    $(MINGW) \
 	    -o "$(BUILD)/payload.exe" \
 	    -static \
 	    *.cpp
