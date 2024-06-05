@@ -75,6 +75,7 @@ Path to bin file containing payload. Default is `local/payload.bin`.
 
 Method for executing shellcode. Supported values are:
 
+- `CERTENUMPHYSICALSTORE`
 - `CERTENUMSYSTEMSTORE`
 - `COPYFILE2`
 - `CRYPTENUMOIDINFO`

