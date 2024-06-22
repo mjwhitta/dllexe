@@ -99,15 +99,14 @@ int entry(int argc, char** argv) {
     COPYFILE2_EXTENDED_PARAMETERS params;
 
     params.dwCopyFlags = COPY_FILE_FAIL_IF_EXISTS;
-    params.dwSize = {sizeof(params)};
-    params.pfCancel = FALSE;
+    params.dwSize = sizeof(params);
+    params.pfCancel = NULL;
     params.pProgressRoutine = (PCOPYFILE2_PROGRESS_ROUTINE)scAddr;
-    params.pvCallbackContext = nullptr;
+    params.pvCallbackContext = NULL;
 
-    DeleteFileW(L"C:\\Windows\\Temp\\backup.log");
     CopyFile2(
-        L"C:\\Windows\\DirectX.log",
-        L"C:\\Windows\\Temp\\backup.log",
+        L"C:\\Windows\\Temp\\notfound.src",
+        L"C:\\Windows\\Temp\\notfound.dst",
         &params
     );
 #elifdef EXEC_CRYPTENUMOIDINFO
