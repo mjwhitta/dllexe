@@ -84,6 +84,7 @@ Method for executing shellcode. Supported values are:
 - `ENUMPWRSCHEMES`
 - `ENUMPROPS`
 - `ENUMWINDOWS`
+- `ENUMWINDOWSTATIONSW`
 - `SETTIMER`
 - `THREAD`
 

